@@ -1,0 +1,29 @@
+version: '3'
+
+
+services:
+
+  # Main LDAP
+  ldap:
+    image: "osixia/openldap:1.2.3"
+    container_name: kauri-ldap
+    ports:
+      - "389:389"
+      - "636:636"
+    environment:
+      - LDAP_ORGANISATION=$org
+      - LDAP_DOMAIN=$domain
+      - LDAP_ADMIN_PASSWORD=$admin_password
+
+
+  # PHP administrator page
+  php-ldap:
+    image: "osixia/phpldapadmin:0.7.2"
+    container_name: kauri-phpldapadmin-service
+    ports:
+      - "6443:443"
+    environment:
+      - LDAP_ORGANISATION=$org
+      - LDAP_DOMAIN=$domain
+      - LDAP_ADMIN_PASSWORD=$admin_password
+      - PHPLDAPADMIN_LDAP_HOSTS=$domain
