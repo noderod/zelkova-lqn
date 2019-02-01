@@ -1,0 +1,132 @@
+{
+    "Solver":"Explicit",
+    "user":"noderod",
+    "password":"test",
+
+    "Variables":{
+
+        "x":{
+            "type":"main",
+            "h":0.5,
+            "min":0,
+            "max":7000
+        },
+
+        "t":{
+            "type":"time",
+            "k":0.001,
+            "min":0,
+            "max":0.3
+        },
+
+        "a":{
+            "type":"scalar",
+            "value":0.1256637
+        },
+
+        "sigma":{
+            "type":"scalar",
+            "value":5.6703E-8
+        },
+
+        "Te":{
+            "type":"scalar",
+            "value":273
+        },
+
+        "R":{
+            "type":"scalar",
+            "value":0.4
+        },
+
+        "v0.0001":{
+                "type":"scalar",
+                "value":0.0001
+        },
+
+        "v1":{
+            "type":"scalar",
+            "value":1
+        },
+
+        "v2":{
+            "type":"scalar",
+            "value":2
+        },
+
+        "v10":{
+            "type":"scalar",
+        "value":10
+        }
+
+    },
+
+
+    "Equation":{
+
+        "Left":{
+
+            "Q-function":1,
+            "t-derivatives":1
+        },
+
+
+        "Right":[
+
+            {
+
+                "Q-function":{"op":"+", "args":["a", "x"]},
+                "NL-function":"None",
+                "partial":2,
+                "Accuracy":2
+            },
+
+            {
+                "Q-function":{"op":"*", "args":["a", "sigma", {"op":"-", "args":[
+                    {"op":"**", "args":["Te", "v1"]}, {"op":"**", "args":["u", "v1"]}]}
+                    ]},
+                "partial":"None"
+            },
+
+            {
+                "Q-function":{"op":"*", "args":["R", "v1"]},
+                "NL-function":"None",
+                "partial":1,
+                "Accuracy":2
+            },
+
+            {
+                "Q-function":{"op":"/", "args":[ {"op":"*", "args":[{"op":"root2", "args":["t"]}, {"op":"**", "args":["x", "v2"]}]}, "u"]},
+                "NL-function":{"op":"log", "args":["v10", {"op":"+", "args":["v0.0001", {"op":"abs", "args":["u"]}]}]},
+                "partial":3,
+                "Accuracy":6
+            }
+        ]
+    },
+
+
+    "Initial Conditions":{
+
+        "0":{
+            "General":273,
+            "Specific":{
+                "x":[50, 150, 7000],
+                "value":[800, 3200, 3]
+            }
+        }
+    },
+
+
+    "Boundary Conditions":{
+
+        "0":{
+            "x":[0, 230, 7000],
+            "value":[8200, 4000, 3]
+        },
+
+        "1":{
+            "x":[15],
+            "value":[240]
+        }
+    }
+}

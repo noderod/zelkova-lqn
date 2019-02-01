@@ -21,7 +21,7 @@ def coefficient_number(m, n):
 def oddcenter(L):
     return int(len(L)/2)
 
-
+    
 # Computes the actual coefficents
 def finite_difference_coefficients(m, n, h):
 
