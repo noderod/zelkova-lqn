@@ -6,6 +6,7 @@ COPY finite_difference.py /zelkova/api/finite_difference.py
 COPY login_action.py /zelkova/api/login_action.py
 COPY first_parser.py /zelkova/api/first_parser.py
 COPY access.py /zelkova/api/access.py
+COPY startup.sh /zelkova/api/startup.sh
 
 
 

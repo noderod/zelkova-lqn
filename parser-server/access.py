@@ -8,13 +8,15 @@ Creates the main API to interact with users directly
 
 
 import datetime
+from flask import Flask, request
+import os
+import uuid
+
 import finite_difference as fdif
 import first_parser as fp
-from flask import Flask, request
+import influx_logger as ilog
 import login_action as logac
-import os
 import pde_parser as pdep
-import uuid
 
 
 app = Flask(__name__)
@@ -38,6 +40,9 @@ def submit_job():
     user = R["user"]
     password = R["password"]
     if not logac.validate_user(user, password):
+
+        infringent_IP = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)  
+        ilog.failed_login(infringent_IP, user, "job submission")
         return "INVALID, user is not allowed access"
 
     # Ensures that x, t variables are provided and correctly formatted
