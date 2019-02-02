@@ -41,21 +41,15 @@ def compute_ops(OPERATIONS, VARIABLES):
 
     if actual_op == "+":
         OP = 0.00
-        if len(OPERATIONS["args"]) < 2:
-            raise SyntaxError("'+' operation requires 2 or more elements, "+str(len(OPERATIONS["args"]))+" provided")
         for qq in range(0, len(OPERATIONS["args"])):
             OP += compute_ops(OPERATIONS["args"][qq], VARIABLES)
         return OP
 
 
     if actual_op == "-":
-        if len(OPERATIONS["args"]) != 2:
-            raise SyntaxError("'+' operation requires 2 elements, "+str(len(OPERATIONS["args"]))+" provided")
         return compute_ops(OPERATIONS["args"][0], VARIABLES)-compute_ops(OPERATIONS["args"][1], VARIABLES)
 
     if actual_op == "*":
-        if len(OPERATIONS["args"]) < 2:
-            raise SyntaxError("'*' operation requires 2 or more elements, "+str(len(OPERATIONS["args"]))+" provided")
 
         OP = 1
         for qq in range(0, len(OPERATIONS["args"])):
@@ -64,50 +58,34 @@ def compute_ops(OPERATIONS, VARIABLES):
 
 
     if actual_op == "/":
-        if len(OPERATIONS["args"]) != 2:
-            raise SyntaxError("'/' operation requires 2 elements, "+str(len(OPERATIONS["args"]))+" provided")
         return compute_ops(OPERATIONS["args"][0], VARIABLES)/compute_ops(OPERATIONS["args"][1], VARIABLES)
 
 
-    if actual_op == "abs":
-        if len(OPERATIONS["args"]) != 1:
-            raise SyntaxError("'abs' operation requires 1 element, "+str(len(OPERATIONS["args"]))+" provided")        
+    if actual_op == "abs":     
         return abs(compute_ops(OPERATIONS["args"][0], VARIABLES))
 
 
-    if actual_op == "root2":
-        if len(OPERATIONS["args"]) != 1:
-            raise SyntaxError("'root2' operation requires 1 element, "+str(len(OPERATIONS["args"]))+" provided")        
+    if actual_op == "root2":       
         return math.sqrt(compute_ops(OPERATIONS["args"][0], VARIABLES))
 
 
     if actual_op == "**":
-        if len(OPERATIONS["args"]) != 2:
-            raise SyntaxError("'/' operation requires 2 elements, "+str(len(OPERATIONS["args"]))+" provided")
         return compute_ops(OPERATIONS["args"][0], VARIABLES)**compute_ops(OPERATIONS["args"][1], VARIABLES)
 
 
     if actual_op == "root":
-        if len(OPERATIONS["args"]) != 2:
-            raise SyntaxError("'/' operation requires 2 elements, "+str(len(OPERATIONS["args"]))+" provided")
         return compute_ops(OPERATIONS["args"][0], OP, VARIABLES)**(1/compute_ops(OPERATIONS["args"][0], OP, VARIABLES))
 
 
     if actual_op == "log10":
-        if len(OPERATIONS["args"]) != 1:
-            raise SyntaxError("'/' operation requires 1 element, "+str(len(OPERATIONS["args"]))+" provided")
         return math.log10(compute_ops(OPERATIONS["args"][0], OP, VARIABLES))
 
 
     if actual_op == "ln":
-        if len(OPERATIONS["args"]) != 1:
-            raise SyntaxError("'/' operation requires 1 element, "+str(len(OPERATIONS["args"]))+" provided")
         return math.log(compute_ops(OPERATIONS["args"][0], OP, VARIABLES))
 
 
     if actual_op == "log":
-        if len(OPERATIONS["args"]) != 2:
-            raise SyntaxError("'/' operation requires 2 element, "+str(len(OPERATIONS["args"]))+" provided")
         return math.log(compute_ops(OPERATIONS["args"][1], VARIABLES), compute_ops(OPERATIONS["args"][0], VARIABLES))
 
     return OP
@@ -146,9 +124,6 @@ def correct_argv(OPERATIONS, VARIABLES):
             return OP
         else:
             raise SyntaxError("'"+OPERATIONS["op"]+"' operation require >= 2 inputs, "+str(len(OPERATIONS["args"]))+" were provided")
-
-
-
 
     else:
         if (len(OPERATIONS["args"]) != FUNC_ARGS[OPERATIONS["op"]]):

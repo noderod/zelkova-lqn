@@ -9,7 +9,8 @@ COPY access.py /zelkova/api/access.py
 
 
 
-RUN apk add --no-cache bash && pip3 install gunicorn redis gunicorn Flask requests
+RUN apk add --no-cache bash build-base  && pip3 install --upgrade pip &&\
+	pip3 install gunicorn gunicorn Flask influxdb numpy requests
 
 WORKDIR /zelkova/api
 

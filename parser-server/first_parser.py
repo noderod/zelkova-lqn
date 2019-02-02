@@ -11,10 +11,11 @@ def ensure_main_keys(COMPLETE):
 
     K = COMPLETE.keys()
 
-    if {"user", "password", "Solver", "Variables", "Equation", "Initial Conditions", "Boundary Conditions"}.issubset(set(K)):
+    if {"user", "password", "Solver", "Variables", "Equation", "Initial Conditions", "Boundary Conditions", "requested-nodes"}.issubset(set(K)):
         return True
 
     return False
+
 
 
 # Returns a string with missing variables
@@ -31,6 +32,7 @@ def keys_missing(COMPLETE):
     return "Missing keys: "+",".join(missing)
 
 
+
 # Ensures the existance of the main variables
 # VARIABLES (dict): Variables dictionary
 def ensure_time(VARIABLES):
@@ -40,14 +42,17 @@ def ensure_time(VARIABLES):
     if "t" not in K:
         return False
 
-    if ("min" not in VARIABLES["t"].keys()) or ("max" not in VARIABLES["t"].keys()) or ("min" not in VARIABLES["k"].keys()):
+    tkeys = VARIABLES["t"].keys()
+
+    if ("min" not in tkeys) or ("max" not in tkeys) or ("min" not in tkeys) or ("k" not in tkeys):
         return False
 
     return True
 
 
+
 # Returns the number of main variables:
-# Return [count, [min, max, h], [...], ...]
+# Return [count, {}, {}, {}]
 def count_xvars(VARIABLES):
 
     tvar = VARIABLES.keys()
@@ -55,12 +60,31 @@ def count_xvars(VARIABLES):
 
     for var in tvar:
         if VARIABLES[var]["type"] == "main":
+            varkeys = VARIABLES[var].keys()
+            if ("min" not in varkeys) or ("max" not in varkeys) or ("min" not in varkeys) or ("h" not in varkeys):
+                # Lacking information
+                return {"count":0}
+
+
             info["count"] += 1
             info[var] = VARIABLES[var]
 
-    info["time"] = VARIABLES["t"]
+    info["t"] = VARIABLES["t"]
 
     return info
+
+
+
+# Ensures that a dict containing an operation holds sufficient information
+def operation_presyntax(opdict):
+
+    # Functions using just the function without any derivatives
+    reqkeys = ["Q-function", "NL-function", "partial", "Accuracy", "pvar"]
+
+    if not all(rk in opdict.keys() for rk in reqkeys):
+        return False
+    return True
+
 
 
 # Ensures basic equation properties
@@ -74,7 +98,13 @@ def valid_pde_equation(EQUATION):
     if left != {"t-derivatives":1}:
         return [False, "Left side must be only du/dt: \"Left\":{\"t-derivatives\":1}"]
 
-
     # Requires the existance of at least one key
-    
+    if not all(type(rel) is dict for rel in right):
+        return [False, "Right side must be an array of operations"]
+
+    for rl in right:
+        if not operation_presyntax(rl):
+            return [False, "One or more operations do not have the correct syntax"]
+
+    return [True]
 

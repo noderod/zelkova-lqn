@@ -1,10 +1,6 @@
 version: '2'
 
 
-volumes:
-#  influxdb:
-  redis:
-
 
 services:
 
@@ -14,19 +10,7 @@ services:
 
     ports:
       - "7500:7500"
-    command: gunicorn -w $GTH -b 0.0.0.0:7500 access:app
+    command: gunicorn -w $GTH -b $URL_BASE:7500 access:app
     environment:
       - URL_BASE
       - REDIS_AUTH
-
-
-
-  redis:
-    image: 'redis:4-alpine'
-    volumes:
-      - ./backup/redis:/var/lib/redis
-    environment:
-      - REDIS_AUTH
-    command: redis-server --requirepass $REDIS_AUTH
-    ports:
-      - '6379:6379'

@@ -8,17 +8,17 @@ Creates the main API to interact with users directly
 
 
 import datetime
+import finite_difference as fdif
 import first_parser as fp
 from flask import Flask, request
 import login_action as logac
 import os
 import pde_parser as pdep
-import redis
 import uuid
 
 
 app = Flask(__name__)
-r_temp_jobs = redis.Redis(host=os.environ['URL_BASE'], password=os.environ['REDIS_AUTH'], db=3)
+
 
 
 
@@ -52,19 +52,24 @@ def submit_job():
     JOB_INFO["UTC (user submission)"] = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")
 
     # Analyzes the variables and obtains the corresponding type
-    main_var_info = fp.count_xvars(R["Variables"])
-    if main_var_info["count"] == 0:
+    JOB_INFO["Constants"] = R["Variables"]
+    JOB_INFO["Variables"] = fp.count_xvars(R["Variables"])
+    if JOB_INFO["Variables"]["count"] == 0:
         return "INVALID, no main variables were found"
+
+    # Removes all main vars
+    for elem in JOB_INFO["Variables"].keys():
+        JOB_INFO["Constants"].pop(elem, None)
+
+    JOB_INFO["Time"] = JOB_INFO["Variables"]["t"]
+    JOB_INFO["Variables"].pop("t", None)
 
     # Obtains the number of desired nodes (3 if never specified)
     user_max_nodes = logac.max_request_nodes(user)
     if user_max_nodes == 0:
         return "INVALID, user is not allowed access to nodes"
 
-    if "requested-nodes" in R.keys:
-        user_requested_nodes = R["nodes"]
-    else:
-        user_requested_nodes = 3
+    user_requested_nodes = R["requested-nodes"]
 
     if user_requested_nodes > user_max_nodes:
         user_requested_nodes = user_max_nodes
@@ -75,21 +80,55 @@ def submit_job():
     if not fp.valid_pde_equation(R["Equation"])[0]:
         return fp.valid_pde_equation(R["Equation"])[1] # Error message
 
+    # Ensures that all operations have the correct syntax
+    # x, t, u are taking at value 1 (no effect in operation)
+    copyvar = dict(R["Variables"])
+    if JOB_INFO["Variables"]["count"] == 1:
+        # Assumed that the variable is x and the output function is u
+        copyvar["x"] = {'value':1}
+        copyvar['t'] = {'value':1}
+        copyvar['u'] = {'value':1}
 
-    # Ensures the type of partial with respect to time is acceptable (du/dt, known as simple)
+    else:
+        return "INVALID, one main var is supported at the moment"
+
+    # Ensures that all operations have the correct syntax
+    op_count = 0
+    for one_operation in R["Equation"]["Right"]:
+        # Checks both non-linear and quasilinear operation
+        if one_operation["Q-function"] != "None":
+            try:
+                pdep.correct_argv(one_operation["Q-function"], copyvar)
+            except Exception as e:
+                return "INVALID, "+str(e)
+
+        if one_operation["NL-function"] != "None":
+            try:
+                pdep.correct_argv(one_operation["NL-function"], copyvar)
+            except Exception as e:
+                return "INVALID, "+str(e)
+
+        # Computes PDE coefficients
+        if one_operation["partial"] == 0:
+            continue
+
+        if one_operation["pvar"] not in JOB_INFO["Variables"].keys():
+            return "INVALID, '"+one_operation["pvar"]+"' is not a variable"
+
+
+        JOB_INFO["op-"+str(op_count)] = one_operation
+        JOB_INFO["op-"+str(op_count)]["finite coefficients"] = fdif.finite_difference_coefficients(one_operation["partial"], 
+                                one_operation["Accuracy"], JOB_INFO["Variables"][one_operation["pvar"]]["h"])
+
+        op_count += 1
+
+    JOB_INFO["number of operations"] = op_count
+    JOB_INFO["id"] = str(uuid.uuid4())
 
 
 
 
-
-    # Computes PDE coefficients
-
-
-
-
-
-
-    # Adds all the information to Redis to be parsed later
+    # Adds all the information to ElasticSearch to be parsed later
 
 
 
@@ -99,6 +138,8 @@ def submit_job():
 
 
 
+
+    return "Test passed"
 
 
 
