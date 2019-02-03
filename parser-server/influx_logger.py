@@ -7,6 +7,9 @@ Stores API log information in InfluxDB
 
 import datetime
 from influxdb import InfluxDBClient
+import os
+
+
 
 
 # Returns a string in UTC time in the format YYYY-MM-DD HH:MM:SS.XXXXXX (where XXXXXX are microseconds)
@@ -27,7 +30,7 @@ def failed_login(IP, unam, action, due_to="incorrect_key"):
     FC.write_points([{
                     "measurement":"bad_credentials",
                     "tags":{
-                            "id":unam
+                            "id":unam,
                             "action":action,
                             "reason":due_to
                             },
@@ -47,7 +50,7 @@ def failed_node_request(IP, unam, action="node request", due_to="node access not
     FC.write_points([{
                     "measurement":"bad_node_requests",
                     "tags":{
-                            "id":unam
+                            "id":unam,
                             "action":action,
                             "reason":due_to
                             },
@@ -56,5 +59,3 @@ def failed_node_request(IP, unam, action="node request", due_to="node access not
                             "client-IP":IP
                             }
                     }])
-
-
