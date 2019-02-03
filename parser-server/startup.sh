@@ -18,6 +18,9 @@ curl -XPOST -u $INFLUXDB_ADMIN_USER:$INFLUXDB_ADMIN_PASSWORD  http://$URL_BASE:8
 # Assigns read privileges
 curl -XPOST -u $INFLUXDB_ADMIN_USER:$INFLUXDB_ADMIN_PASSWORD  http://$URL_BASE:8086/query \
     --data-urlencode "q=GRANT READ ON \"api_jobs\" TO \"$INFLUXDB_READ_USER\""
+curl -XPOST -u $INFLUXDB_ADMIN_USER:$INFLUXDB_ADMIN_PASSWORD  http://$URL_BASE:8086/query \
+    --data-urlencode "q=GRANT READ ON \"failed_login\" TO \"$INFLUXDB_READ_USER\""
+
 
 # False logins remain an admin priviledge
 

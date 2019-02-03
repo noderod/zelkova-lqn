@@ -23,6 +23,11 @@ app = Flask(__name__)
 
 
 
+@app.route("/zelkova/api/ping", methods=['GET'])
+def ping():
+    return "pong"
+
+
 
 @app.route("/zelkova/api/jobs/submit", methods=['POST'])
 def submit_job():
@@ -39,9 +44,8 @@ def submit_job():
 
     user = R["user"]
     password = R["password"]
-    if not logac.validate_user(user, password):
-
-        infringent_IP = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)  
+    infringent_IP = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+    if not logac.validate_user(user, password):  
         ilog.failed_login(infringent_IP, user, "job submission")
         return "INVALID, user is not allowed access"
 
@@ -53,7 +57,7 @@ def submit_job():
     # Store basic job information
     JOB_INFO = {}
     JOB_INFO["Solver"] = R["Solver"]
-    JOB_INFO["User"] = R["user"]
+    JOB_INFO["User"] = user
     JOB_INFO["UTC (user submission)"] = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")
 
     # Analyzes the variables and obtains the corresponding type
@@ -72,6 +76,7 @@ def submit_job():
     # Obtains the number of desired nodes (3 if never specified)
     user_max_nodes = logac.max_request_nodes(user)
     if user_max_nodes == 0:
+        ilog.failed_node_request(infringent_IP, user)
         return "INVALID, user is not allowed access to nodes"
 
     user_requested_nodes = R["requested-nodes"]
@@ -140,7 +145,7 @@ def submit_job():
 
 
     # Adds a record of job started to InfluxDB
-
+    ilog.job_submission(infringent_IP, user, user_requested_nodes, JOB_INFO["id"], JOB_INFO["Variables"]["count"], op_count)
 
 
 
