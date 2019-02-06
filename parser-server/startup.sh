@@ -26,4 +26,6 @@ curl -XPOST -u $INFLUXDB_ADMIN_USER:$INFLUXDB_ADMIN_PASSWORD  http://$URL_BASE:8
 
 printf "Database privileges have been added\n"
 
-gunicorn -w $GTH -b 0.0.0.0:7500 access:app
+gunicorn -w $GTH -b 0.0.0.0:7500 access:app &
+
+tail -F anything

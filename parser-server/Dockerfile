@@ -12,7 +12,7 @@ COPY startup.sh /zelkova/api/startup.sh
 
 
 RUN apk add --no-cache bash build-base curl && pip3 install --upgrade pip &&\
-    pip3 install gunicorn gunicorn Flask influxdb numpy requests && chmod +x /zelkova/api/startup.sh
+    pip3 install gunicorn gunicorn Flask influxdb numpy pymongo requests && chmod +x /zelkova/api/startup.sh
 
 WORKDIR /zelkova/api
 

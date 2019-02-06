@@ -25,3 +25,18 @@ def new_job(jobdoc):
     except:
         return [False, "Could not connect to MongoDB\nContact the system administrator if you see this message"]
 
+
+
+# Returns a list of all user jobs IDs in a JSON format
+# {user: username, ids:[]}
+def get_all_user_jobs_ids(username):
+    cursor = normal_jobs.find({"User":username})
+    userdata = {"user":username, "ids":[]}
+
+    for document in cursor:
+        userdata["ids"].append(document["_id"])
+
+    return userdata
+
+
+

@@ -48,3 +48,8 @@ The followibng roadmap reflects the intended progress:
 
 
 
+### License Notices
+
+This code uses the *pymongo* python library, distributed under the Apache License 2.0 . A copy of the license is provided in this repo in the [dependencies](./dependencies/LICENSE) directory.
+
+

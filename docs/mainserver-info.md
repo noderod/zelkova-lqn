@@ -20,6 +20,23 @@ URL_BASE=example.com GTH=6 docker-compose up -d
 
 
 
+To stop the APIs, update, and restart:
+
+```bash
+# Login into the API container
+
+# Stop APIs
+cd /zelkova/api
+pkill guincorn
+
+# Update
+
+# Restart APIs
+gunicorn -w $GTH -b 0.0.0.0:7500 access:app &
+```
+
+
+
 * **Connecting a Grafana instance**
 
 [Grafana](http://docs.grafana.org/) is a popular data visualization platform. Although not required at all, it can be used to observe the data entered into InfluxDB.
@@ -36,6 +53,8 @@ docker run -d -p 3000:3000 grafana/grafana
 
 To login, go to *http://mygrafana.url:3000*. Starting username and password are both *admin*.
 Add dashboards to observe the data:
+
+
 ```sql
 
 # Correct API job submission

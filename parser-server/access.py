@@ -8,7 +8,7 @@ Creates the main API to interact with users directly
 
 
 import datetime
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import os
 
 import finite_difference as fdif
@@ -134,6 +134,30 @@ def submit_job():
     return "Your job has been correctly submitted\nJob ID: "+mongo_submit[1]
 
 
+
+# Returns a list of jobns submitted a user
+@app.route("/zelkova/api/jobs/submit", methods=['GET'])
+def submit_job():
+
+    # Requires json
+    try:
+        R = request.get_json()
+    except:
+        return "INVALID, json could not be parsed"
+
+    infringent_IP = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+    # Ensure the existance of basic keys
+    try:
+        user = R["user"]
+        password = R["password"]
+    except:
+        ilog.failed_login(infringent_IP, user, "id checks")
+
+    if not logac.validate_user(user, password):  
+        ilog.failed_login(infringent_IP, user, "id checks")
+        return "INVALID, user is not allowed access"
+
+    return jsonify(monlog.get_all_user_jobs_ids(user))
 
 
 
