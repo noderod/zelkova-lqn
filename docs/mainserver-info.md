@@ -5,7 +5,7 @@
 
 Specify a base URL for the server ($URL_BASE) without http:// or https://, if not provided, it will be taken as "0.0.0.0" . This change is **required** in order to
 avoid connection errors with InfluxDB.    
-Specify InfluxDB credentials, defaults are shown in the *.env* file 
+Specify InfluxDB, MongoDB credentials, defaults are shown in the *.env* file 
 
 
 By default, the API server is run using 4 threads via gunicorn, but this setting can be changed by the $GTH variable.
@@ -41,15 +41,10 @@ Add dashboards to observe the data:
 # Correct API job submission
 SELECT * FROM "api_jobs"."autogen"."api_job_submission"
 
-
 # Failed logins
 SELECT * FROM "failed_login"."autogen"."bad_credentials"
-
 # Failed node requests
 SELECT * FROM "failed_login"."autogen"."bad_node_requests"
-
-
-
 ```
 
 

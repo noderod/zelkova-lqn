@@ -63,7 +63,7 @@ def failed_node_request(IP, unam, action="node request", due_to="node access not
 
 
 # Correct job submission
-def job_submission(IP, unam, nodes, job_id, numvars, operations_count):
+def job_submission(IP, unam, job_id, numvars, operations_count):
     FC = InfluxDBClient(host = os.environ['URL_BASE'], port = 8086, username = os.environ['INFLUXDB_WRITE_USER'], 
         password = os.environ['INFLUXDB_WRITE_USER_PASSWORD'], database = 'api_jobs')
 
@@ -71,8 +71,7 @@ def job_submission(IP, unam, nodes, job_id, numvars, operations_count):
                     "measurement":"api_job_submission",
                     "tags":{
                             "id":unam,
-                            "action":"job submission",
-                            "nodes-requested":nodes
+                            "action":"job submission"
                             },
                     "time":timformat(),
                     "fields":{

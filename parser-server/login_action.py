@@ -14,11 +14,6 @@ def validate_user(user, password):
     return True
 
 
-# Obtains the maximum number of nodes that the user can utilize
-def max_request_nodes(user):
-    return 4
-
-
 
 
 

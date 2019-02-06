@@ -10,12 +10,12 @@ Creates the main API to interact with users directly
 import datetime
 from flask import Flask, request
 import os
-import uuid
 
 import finite_difference as fdif
 import first_parser as fp
 import influx_logger as ilog
 import login_action as logac
+import mongo_logger as monlog
 import pde_parser as pdep
 
 
@@ -73,18 +73,6 @@ def submit_job():
     JOB_INFO["Time"] = JOB_INFO["Variables"]["t"]
     JOB_INFO["Variables"].pop("t", None)
 
-    # Obtains the number of desired nodes (3 if never specified)
-    user_max_nodes = logac.max_request_nodes(user)
-    if user_max_nodes == 0:
-        ilog.failed_node_request(infringent_IP, user)
-        return "INVALID, user is not allowed access to nodes"
-
-    user_requested_nodes = R["requested-nodes"]
-
-    if user_requested_nodes > user_max_nodes:
-        user_requested_nodes = user_max_nodes
-
-    JOB_INFO["requested-nodes"] = user_requested_nodes
 
     # Ensures the existance of the equation and proper syntax
     if not fp.valid_pde_equation(R["Equation"])[0]:
@@ -129,33 +117,21 @@ def submit_job():
         JOB_INFO["op-"+str(op_count)] = one_operation
         JOB_INFO["op-"+str(op_count)]["finite coefficients"] = fdif.finite_difference_coefficients(one_operation["partial"], 
                                 one_operation["Accuracy"], JOB_INFO["Variables"][one_operation["pvar"]]["h"])
-
         op_count += 1
 
     JOB_INFO["number of operations"] = op_count
-    JOB_INFO["id"] = str(uuid.uuid4())
+    JOB_INFO["Status"] = "Waiting"
 
 
-
-
-    # Adds all the information to ElasticSearch to be parsed later
-
-
-
-
+    # Adds all the information to MongoDB to be parsed later
+    mongo_submit = monlog.new_job(JOB_INFO)
+    if not mongo_submit[0]:
+        return "INVALID\n"+mongo_submit[1]
 
     # Adds a record of job started to InfluxDB
-    ilog.job_submission(infringent_IP, user, user_requested_nodes, JOB_INFO["id"], JOB_INFO["Variables"]["count"], op_count)
+    ilog.job_submission(infringent_IP, user, mongo_submit[1], JOB_INFO["Variables"]["count"], op_count)
 
-
-
-    return "Test passed"
-
-
-
-
-
-
+    return "Your job has been correctly submitted\nJob ID: "+mongo_submit[1]
 
 
 

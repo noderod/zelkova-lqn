@@ -11,7 +11,7 @@ def ensure_main_keys(COMPLETE):
 
     K = COMPLETE.keys()
 
-    if {"user", "password", "Solver", "Variables", "Equation", "Initial Conditions", "Boundary Conditions", "requested-nodes"}.issubset(set(K)):
+    if {"user", "password", "Solver", "Variables", "Equation", "Initial Conditions", "Boundary Conditions"}.issubset(set(K)):
         return True
 
     return False

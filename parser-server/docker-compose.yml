@@ -2,6 +2,8 @@ version: '2'
 
 volumes:
   influxdb:
+  mongo:
+
 
 
 services:
@@ -23,10 +25,13 @@ services:
       - INFLUXDB_READ_USER_PASSWORD 
       - INFLUXDB_WRITE_USER
       - INFLUXDB_WRITE_USER_PASSWORD
+      - MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD
 
   # Define an InfluxDB service
   influxdb:
     image: influxdb:latest
+    restart: always
     volumes:
       - ./backup/influxdb:/var/lib/influxdb
     ports:
@@ -43,3 +48,14 @@ services:
       - INFLUXDB_WRITE_USER_PASSWORD
 
     command: "influxd"
+
+  mongo:
+    image: mongo:4.
+    restart: always
+    volumes:
+      - ./backup/mongo:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD
+    ports:
+      - 27017:27017
