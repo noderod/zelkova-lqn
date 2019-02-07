@@ -50,7 +50,7 @@ services:
     command: "influxd"
 
   mongo:
-    image: mongo:4.
+    image: mongo:4.1
     restart: always
     volumes:
       - ./backup/mongo:/data/db

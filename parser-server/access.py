@@ -131,13 +131,13 @@ def submit_job():
     # Adds a record of job started to InfluxDB
     ilog.job_submission(infringent_IP, user, mongo_submit[1], JOB_INFO["Variables"]["count"], op_count)
 
-    return "Your job has been correctly submitted\nJob ID: "+mongo_submit[1]
+    return "Your job has been correctly submitted\nJob ID: "+str(mongo_submit[1])
 
 
 
 # Returns a list of jobns submitted a user
-@app.route("/zelkova/api/jobs/submit", methods=['GET'])
-def submit_job():
+@app.route("/zelkova/api/jobs/list_ids", methods=['GET'])
+def job_list_ids():
 
     # Requires json
     try:

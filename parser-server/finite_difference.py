@@ -37,7 +37,7 @@ def finite_difference_coefficients(m, n, h):
         for col in range(0, 2*p+1):
             M[row][col] = (-p + col)**row
 
-    return (h**m)*np.linalg.solve(M, m0)
+    return list((h**m)*np.linalg.solve(M, m0))
 
 
 # Creates the u matrix for each derivative
