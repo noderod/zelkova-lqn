@@ -20,21 +20,6 @@ URL_BASE=example.com GTH=6 docker-compose up -d
 
 
 
-To stop the APIs, update, and restart:
-
-```bash
-# Login into the API container
-
-# Stop APIs
-cd /zelkova/api
-pkill guincorn
-
-# Update
-
-# Restart APIs
-gunicorn -w $GTH -b 0.0.0.0:7500 access:app &
-```
-
 
 
 * **Connecting a Grafana instance**

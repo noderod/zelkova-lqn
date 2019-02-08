@@ -19,7 +19,7 @@ All information transfer between steps is done directly netwrok in order to impr
 A comprehensive documentation of each zelkova component is available in the [documentation directory](./docs):
 * [User signup, login, and credentials](./docs/user-info.md)
 * [Main server, front-end](./docs/mainserver-info.md)
-
+* [Computation nodes](./docs/computation-nodes.md)
 
 
 
