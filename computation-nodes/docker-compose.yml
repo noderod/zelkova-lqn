@@ -1,14 +1,12 @@
-version: '3.4'
+version: '3'
 
 
 services:
 
-
-    # Main node user orchestration
-    conductor:
+    # Computing node
+    computing_node:
       build: .
       image: "zelkova/c-node"
-      container_name: conductor
       ports:
         - "5000:5000"
       environment:
@@ -17,4 +15,6 @@ services:
       - INFLUXDB_WRITE_USER_PASSWORD
       - MONGO_INITDB_ROOT_USERNAME
       - MONGO_INITDB_ROOT_PASSWORD
-      command: go run traffic.go
+      - UNIQUE_ID
+      # Placeholder while in development
+      command: tail -F anything

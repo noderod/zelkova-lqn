@@ -16,6 +16,9 @@ All the following installation options are equally valid:
 Log into the server.  
 Requirements: docker, docker-compose
 
+An unique identification ID must be assigned to each node by the user. If there is already a computing node with this same ID, the container will
+automatically shut off.
+
 ```bash
 # Installation
 cd ./computation-nodes
@@ -23,7 +26,7 @@ cd ./computation-nodes
 # URL_BASE: URL of the main server, not the computing node
 URL_BASE=example.com INFLUXDB_WRITE_USER=writer INFLUXDB_WRITE_USER_PASSWORD=writer \
 		 MONGO_INITDB_ROOT_USERNAME=root MONGO_INITDB_ROOT_USERNAME=root \
-		 docker-compose up -d 
+		 UNIQUE_ID=node1 docker-compose up -d 
 ```
 
 

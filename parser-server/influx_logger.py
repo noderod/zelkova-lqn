@@ -78,6 +78,6 @@ def job_submission(IP, unam, job_id, numvars, operations_count):
                             "client-IP":IP,
                             "job-id":job_id,
                             "variable-count":numvars,
-                            "operations-count":operations_count 
+                            "operations-count":operations_count
                             }
                     }])

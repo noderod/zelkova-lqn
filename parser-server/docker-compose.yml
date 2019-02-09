@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 volumes:
   influxdb:
@@ -13,7 +13,6 @@ services:
     image: "zelkova:apis"
     ports:
       - "7500:7500"
-    command: ./startup.sh
     environment:
       - GTH
       - URL_BASE
@@ -27,6 +26,7 @@ services:
       - INFLUXDB_WRITE_USER_PASSWORD
       - MONGO_INITDB_ROOT_USERNAME
       - MONGO_INITDB_ROOT_PASSWORD
+    command: ./startup.sh
 
   # Define an InfluxDB service
   influxdb:

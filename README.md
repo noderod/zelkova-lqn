@@ -9,7 +9,7 @@ Zelkova-LQN is a numerical solver for PDEs.
 
 
 ### Data storage
-LQN uses both Redis and InfluxDB as auxiliary databases. However, these databases are only used for storage after each step and once the PDE has been solved.
+LQN uses both MongoDB and InfluxDB as auxiliary databases. However, these databases are only used for storage after each step and once the PDE has been solved.
 All information transfer between steps is done directly netwrok in order to improve performance.
 
 
@@ -50,6 +50,6 @@ The followibng roadmap reflects the intended progress:
 
 ### License Notices
 
-This code uses the *pymongo* python library, distributed under the Apache License 2.0 . A copy of the license is provided in this repo in the [dependencies](./dependencies/LICENSE) directory.
+This code uses the *pymongo*, *mongo-go-driver* python library, distributed under the Apache License 2.0 . A copy of the license is provided in this repo in the [dependencies](./dependencies/LICENSE) directory.
 
 

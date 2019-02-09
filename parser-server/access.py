@@ -100,6 +100,8 @@ def submit_job():
             except Exception as e:
                 return "INVALID, "+str(e)
 
+        op_count += 1
+
         if one_operation["NL-function"] != "None":
             try:
                 pdep.correct_argv(one_operation["NL-function"], copyvar)
@@ -117,7 +119,6 @@ def submit_job():
         JOB_INFO["op-"+str(op_count)] = one_operation
         JOB_INFO["op-"+str(op_count)]["finite coefficients"] = fdif.finite_difference_coefficients(one_operation["partial"], 
                                 one_operation["Accuracy"], JOB_INFO["Variables"][one_operation["pvar"]]["h"])
-        op_count += 1
 
     JOB_INFO["number of operations"] = op_count
     JOB_INFO["Status"] = "Waiting"
@@ -129,7 +130,7 @@ def submit_job():
         return "INVALID\n"+mongo_submit[1]
 
     # Adds a record of job started to InfluxDB
-    ilog.job_submission(infringent_IP, user, mongo_submit[1], JOB_INFO["Variables"]["count"], op_count)
+    ilog.job_submission(infringent_IP, user, str(mongo_submit[1]), JOB_INFO["Variables"]["count"], op_count)
 
     return "Your job has been correctly submitted\nJob ID: "+str(mongo_submit[1])
 
